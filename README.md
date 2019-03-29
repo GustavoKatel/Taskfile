@@ -39,7 +39,7 @@ time ${@:-default}
 
 And to run a task:
 
-    $ run build
+    $ task build
     Hash: 31b6167c7c8f2920e0d2
     Version: webpack 2.1.0-beta.25
     Time: 4664ms
@@ -52,20 +52,20 @@ And to run a task:
 To "install", add the following to your `.bashrc` or `.zshrc` (or `.whateverrc`):
 
     # Quick start with the default Taskfile template
-    alias run-init="curl -so Taskfile https://raw.githubusercontent.com/adriancooney/Taskfile/master/Taskfile.template && chmod +x Taskfile"
-    
+    alias task-init="curl -so Taskfile https://raw.githubusercontent.com/GustavoKatel/Taskfile/master/Taskfile.template && chmod +x Taskfile"
+
     # Run your tasks like: run <task>
-    alias run=./Taskfile
+    alias task=./Taskfile
 
 ## Usage
-Open your directory and run `run-init` to add the default Taskfile template to your project directory:
+Open your directory and run `task-init` to add the default Taskfile template to your project directory:
 
     $ cd my-project
-    $ run-init
+    $ task-init
 
-Open the `Taskfile` and add your tasks. To run tasks, use `run`:
+Open the `Taskfile` and add your tasks. To run tasks, use `task`:
 
-    $ run help
+    $ task help
     ./Taskfile <task> <args>
     Tasks:
          1  build
@@ -168,14 +168,14 @@ function build-all {
 
 And execute the `build-all` task:
 
-    $ run build-all
+    $ task build-all
     beep web boop
     beep mobile boop
     built web
     built mobile
 
 ### Default task
-To make a task the default task called when no arguments are passed, we can use bash’s default variable substitution `${VARNAME:-<default value>}` to return `default` if `$@` is empty. 
+To make a task the default task called when no arguments are passed, we can use bash’s default variable substitution `${VARNAME:-<default value>}` to return `default` if `$@` is empty.
 
 ```sh
 #!/bin/bash
@@ -217,8 +217,8 @@ time ${@:-default}
 
 And if we execute the `build` task:
 
-    $ ./Taskfile build 
-    beep boop built 
+    $ ./Taskfile build
+    beep boop built
     Task completed in 0m1.008s
 
 ### Help
@@ -272,18 +272,18 @@ time "task:${@:-default}"
 ### Executing tasks
 So typing out `./Taskfile` every time you want to run a task is a little lousy.  just flows through the keyboard so naturally that I wanted something better. The solution for less keystrokes was dead simple: add an alias for `run` (or `task`, whatever you fancy) and stick it in your *.zshrc.* Now, it now looks the part.
 
-    $ alias run=./Taskfile
-    $ run build
+    $ alias task=./Taskfile
+    $ task build
     beep boop built
     Task completed in 0m1.008s
 
 ### Quickstart
-Alongside my `run` alias, I also added a `run-init` to my *.zshrc* to quickly get started with a new Taskfile in a project. It downloads a [small Taskfile template](http://github.com/adriancooney/Taskfile) to the current directory and makes it executable:
+Alongside my `task` alias, I also added a `task-init` to my *.zshrc* to quickly get started with a new Taskfile in a project. It downloads a [small Taskfile template](http://github.com/adriancooney/Taskfile) to the current directory and makes it executable:
 
-    $ alias run-init="curl -so Taskfile https://medium.com/r/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fadriancooney%2FTaskfile%2Fmaster%2FTaskfile.template && chmod +x Taskfile"
+    $ alias task-init="curl -so Taskfile https://medium.com/r/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fadriancooney%2FTaskfile%2Fmaster%2FTaskfile.template && chmod +x Taskfile"
 
-    $ run-init
-    $ run build
+    $ task-init
+    $ task build
     beep boop built
     Task completed in 0m1.008s
 
@@ -291,17 +291,17 @@ Alongside my `run` alias, I also added a `run-init` to my *.zshrc* to quickly ge
 If you've the incredible [jq](https://stedolan.github.io/jq/manual/) installed (you should, it's so useful), here's a handy oneliner to import your scripts from your package.json into a fresh Taskfile. Copy and paste this into your terminal with your package.json in the working directory:
 
 ```sh
-run-init && (head -n 3 Taskfile && jq -r '.scripts | to_entries[] | "function \(.["key"]) {\n    \(.["value"])\n}\n"' package.json | sed -E 's/npm run ([a-z\:A-Z]+)/\1/g' && tail -n 8 Taskfile) > Taskfile.sh && mv Taskfile.sh Taskfile && chmod +x Taskfile 
+task-init && (head -n 3 Taskfile && jq -r '.scripts | to_entries[] | "function \(.["key"]) {\n    \(.["value"])\n}\n"' package.json | sed -E 's/npm run ([a-z\:A-Z]+)/\1/g' && tail -n 8 Taskfile) > Taskfile.sh && mv Taskfile.sh Taskfile && chmod +x Taskfile
 ```
 
 And the importer explained:
 
 ```sh
-$ run-init && \ # Download a fresh Taskfile template
+$ task-init && \ # Download a fresh Taskfile template
     (
         head -n 3 Taskfile && \ # Take the Taskfile template header
         # Extract the scripts using JQ and create bash task functions
-        jq -r '.scripts | to_entries[] | "function \(.["key"]) {\n    \(.["value"])\n}\n"' package.json \ 
+        jq -r '.scripts | to_entries[] | "function \(.["key"]) {\n    \(.["value"])\n}\n"' package.json \
             | sed -E 's/npm run ([a-z\:A-Z]+)/\1/g' \ # Replace any `npm run <task>` with the task name
         && tail -n 8 Taskfile # Grab the Taskfile template footer
     ) \ # Combine header, body and footer
@@ -337,3 +337,7 @@ The only caveat with the Taskfile format is we forgo compatibility with Windows 
 ### Collaboration
 
 The Taskfile format is something I’d love to see become more widespread and it’d be awesome if we could all come together on a standard of sorts. Things like simple syntax highlighting extensions or best practices guide would be awesome to formalise.
+
+### Contribution note:
+
+This is a slight modified version of [https://github.com/adriancooney/Taskfile](https://github.com/adriancooney/Taskfile). Thanks for the idea!
